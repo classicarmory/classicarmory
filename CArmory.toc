@@ -1,0 +1,11 @@
+## Interface: 30400
+## Title: |c78B7FFFFClassic|r |cE0F0FFFFArmory|r v.1.0.0
+## Notes: Export character data to classic armory
+## Author: Exploit
+## Version: 0.1.0
+## SavedVariablesPerCharacter: CArmoryData
+
+Libs\LibStub\LibStub.lua
+Libs\LibBase64\LibBase64-1.0.lua
+
+CArmory.lua
