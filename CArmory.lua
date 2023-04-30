@@ -1,4 +1,4 @@
-
+addonName = ...
 local EventFrame = CreateFrame("frame", "EventFrame")
 EventFrame:RegisterEvent("ADDON_LOADED")
 EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -8,41 +8,43 @@ EventFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
 
 local data = {}
 EventFrame:SetScript("OnEvent", function(self, event, ...)
-    
-    if(event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_EQUIPMENT_CHANGED" or event == "PLAYER_QUITING") then
-        local name, _ = UnitName("player")
-        local playerUnit = UnitGUID("player")
-        local locClass, _, locRace, _, _, _, _ = GetPlayerInfoByGUID(playerUnit)
-        local guildName, guildRankName, guildRankIndex = GetGuildInfo("player") 
-        local englishFaction, localizedFaction = UnitFactionGroup("player")
+    local arg1 = ...
+    if(event == "ADDON_LOADED" and arg1 == addonName or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_EQUIPMENT_CHANGED" or event == "PLAYER_QUITING") then
+        print(addonName)
+        name = UnitName("player")
+        playerUnit = UnitGUID("player")
+        localizedClass= UnitClass("player");
+        locRace = GetPlayerInfoByGUID(playerUnit)
+        englishFaction = UnitFactionGroup("player")
+        guildName, guildRankName = GetGuildInfo("player")
         --local realm = GetRealmName()
-        local level = UnitLevel("player")
-        local powerType, powerTypeString = UnitPowerType("player");
-        local powerTypeMax = UnitPowerMax("player",powerType)
-        local health = UnitHealthMax("player")
+        level = UnitLevel("player")
+        powerType, powerTypeString = UnitPowerType("player");
+        powerTypeMax = UnitPowerMax("player",powerType)
+        health = UnitHealthMax("player")
         -- Get Spell Stats
         --local spellHaste = GetCombatRating(20)
         --local spellCrit = GetCombatRating(11)
-        local spellHit = GetCombatRating(8)
-        local bonusHeal = GetSpellBonusHealing()
-        local spellDamage = GetSpellBonusDamage(2)
-        local base, casting = GetManaRegen()
-        local spellManaRegen = base..":"..casting
+        spellHit = GetCombatRating(8)
+        bonusHeal = GetSpellBonusHealing()
+        spellDamage = GetSpellBonusDamage(2)
+        base, casting = GetManaRegen()
+        spellManaRegen = base..":"..casting
 
         -- Get Melee stats
-        local lowDmg, hiDmg, offlowDmg, offhiDmg, posBuff, negBuff, percentmod = UnitDamage("player");
-        local meleeCrit = GetCombatRating(9)
-        local meleeHit = GetCombatRating(6)
+        lowDmg, hiDmg = UnitDamage("player");
+        meleeCrit = GetCombatRating(9)
+        meleeHit = GetCombatRating(6)
 
         -- Get Defense stats (armor already exported via getBaseArmor())
-        local baseDefense, armorDefense = UnitDefense("player");
+        baseDefense, armorDefense = UnitDefense("player");
         -- Get Ranged stats
-        if (level >= 19) then
+        if (level >= 19 and name and level and localizedClass and englishFaction) then
             data = {
                 ["name"] = name,
                 ["level"] = level,
                 ["realm"] = GetRealmName(),
-                ["class"] = locClass,
+                ["class"] = localizedClass,
                 ["race"] = locRace,
                 ["talentTabNames"] = getTalentTabNames(),
                 ["primaryTalents"] = getPrimaryTalents(),
@@ -78,7 +80,7 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
             }
 
             for i=1, 19 do
-                local getItemString = GetInventoryItemLink("player",i)
+                local getItemString = GetInventoryItemLink("player",i) -- might not be needed
                 local itemId = GetInventoryItemID("player", i);
                 if(itemId) then
                     local item = Item:CreateFromEquipmentSlot(i)
@@ -105,6 +107,8 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
             end
             CArmoryData = data
             print(name.." Loaded into armory")
+        else
+            print("error loading all needed data for armory")
         end
     end -- end events
 end)
@@ -121,6 +125,11 @@ end)
 --        print("slot "..slot)
 --    end
 --end
+
+function IsPlayerInGuild()
+    --local guildName, guildRankName = GetGuildInfo("player")
+    return IsInGuild()
+end
 
 -- Get base stat information from statID
 function getBaseStats(statID)
