@@ -5,7 +5,7 @@ EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 EventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 EventFrame:RegisterEvent("PLAYER_QUITING")
 EventFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
-
+ -- Some bugs need to be fixed
 local data = {}
 EventFrame:SetScript("OnEvent", function(self, event, ...)
     local arg1 = ...
