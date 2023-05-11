@@ -10,11 +10,10 @@ local data = {}
 EventFrame:SetScript("OnEvent", function(self, event, ...)
     local arg1 = ...
     if(event == "ADDON_LOADED" and arg1 == addonName or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_EQUIPMENT_CHANGED" or event == "PLAYER_QUITING") then
-        print(addonName)
         name = UnitName("player")
         playerUnit = UnitGUID("player")
         localizedClass= UnitClass("player");
-        locRace = GetPlayerInfoByGUID(playerUnit)
+        race, raceEn = UnitRace("player");
         englishFaction = UnitFactionGroup("player")
         guildName, guildRankName = GetGuildInfo("player")
         --local realm = GetRealmName()
@@ -45,7 +44,7 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
                 ["level"] = level,
                 ["realm"] = GetRealmName(),
                 ["class"] = localizedClass,
-                ["race"] = locRace,
+                ["race"] = race,
                 ["talentTabNames"] = getTalentTabNames(),
                 ["primaryTalents"] = getPrimaryTalents(),
                 ["powerType"] = powerTypeString,
